@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ingredient Checker</title>
+    <style>
+        /* Reset styles */
+        body, h1, p, textarea, button, div {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Body styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        /* Container */
+        .container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #1976d2;
+            margin-bottom: 15px;
+        }
+
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            outline: none;
+            resize: none;
+        }
+
+        textarea:focus {
+            border-color: #1976d2;
+            box-shadow: 0 0 5px rgba(25, 118, 210, 0.3);
+        }
+
+        button {
+            background: #1976d2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0d47a1;
+        }
+
+        #results {
+            margin-top: 20px;
+            text-align: left;
+        }
+
+        .error {
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .success {
+            color: #388e3c;
+            font-weight: bold;
+        }
+
+        /* Footer styles */
+        footer {
+            margin-top: auto;
+            text-align: center;
+            font-size: 12px;
+            font-weight: bold;
+            color: #555;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ingredient List Checker</h1>
+        <p>Enter the ingredient list in the format: "Percentage Name"</p>
+        <textarea id="ingredientList" placeholder="Example:
+88.02 Di water
+5 Methylpropanediol
+3.5 Glycerin
+0.01 Ergothioneine"></textarea>
+        <button onclick="processIngredients()">Check Ingredients</button>
+
+        <div id="results"></div>
+    </div>
+
+    <footer>จัดทำโดย TON CAP GUN</footer>
+
+    <script>
+        function processIngredients() {
+            const input = document.getElementById('ingredientList').value.trim();
+            const lines = input.split('\n');
+            const ingredients = new Map(); // ใช้ Map เพื่อเก็บชื่อและตรวจซ้ำ
+            let totalPercentage = 0;
+            const duplicateNames = [];
+
+            lines.forEach(line => {
+                const parts = line.trim().match(/^([\d.]+)\s?%?\s(.+)$/); // แยกเปอร์เซ็นต์และชื่อ
+                if (parts) {
+                    const percentage = parseFloat(parts[1]); // ดึงค่าตัวเลข
+                    const name = parts[2].trim().toLowerCase(); // แปลงชื่อเป็นตัวพิมพ์เล็ก
+                    if (!isNaN(percentage)) {
+                        totalPercentage += percentage;
+
+                        // ตรวจสอบชื่อซ้ำ
+                        if (ingredients.has(name)) {
+                            duplicateNames.push(parts[2].trim()); // ใช้ชื่อเดิมที่ไม่ได้แปลง
+                        } else {
+                            ingredients.set(name, true);
+                        }
+                    }
+                }
+            });
+
+            // สร้างผลลัพธ์
+            let results = `<p class="success"><strong>Total Percentage:</strong> ${totalPercentage.toFixed(3)}%</p>`;
+            if (duplicateNames.length > 0) {
+                results += `<p class="error"><strong>Duplicate Names:</strong> ${duplicateNames.join(', ')}</p>`;
+            } else {
+                results += `<p class="success"><strong>No duplicate names found.</strong></p>`;
+            }
+
+            document.getElementById('results').innerHTML = results;
+        }
+    </script>
+</body>
+</html>
