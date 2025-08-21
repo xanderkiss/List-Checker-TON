@@ -110,8 +110,8 @@
         <p>Enter the ingredient list in the format: "Percentage Name"</p>
         <textarea id="ingredientList" placeholder="Example:
 88.02 Di water
-5 Methylpropanediol
-3.5 Glycerin
+5%Methylpropanediol
+3.5% Glycerin
 0.01 Ergothioneine"></textarea>
         <button onclick="processIngredients()">Check Ingredients</button>
 
@@ -129,7 +129,9 @@
             const duplicateNames = [];
 
             lines.forEach(line => {
-                const parts = line.trim().match(/^([\d.]+)\s?%?\s(.+)$/); // แยกเปอร์เซ็นต์และชื่อ
+                // *** จุดที่แก้ไข ***
+                const parts = line.trim().match(/^([\d.]+)\s?%?\s*(.+)$/); // แก้ไข Regex ให้ยืดหยุ่นขึ้น
+
                 if (parts) {
                     const percentage = parseFloat(parts[1]); // ดึงค่าตัวเลข
                     const name = parts[2].trim().toLowerCase(); // แปลงชื่อเป็นตัวพิมพ์เล็ก
